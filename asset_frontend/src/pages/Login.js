@@ -10,6 +10,12 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    // Debug log
+    console.log('Email:', email);
+    console.log('Password:', password);
+    console.log('API URL:', process.env.REACT_APP_API_URL);
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/auth/login`,
@@ -18,6 +24,7 @@ const Login = () => {
       localStorage.setItem('token', response.data.data.token);
       navigate('/inspections');
     } catch (err) {
+      console.error('Login error:', err.response?.data);
       setError(err.response?.data?.message || 'Login failed');
     }
   };
