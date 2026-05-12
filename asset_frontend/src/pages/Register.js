@@ -2,31 +2,50 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = 'https://kopwan-s6-production.up.railway.app/api';
+
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (password !== passwordConfirm) {
+      setError('Password confirmation does not match.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+
+    setLoading(true);
+
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/register`,
-        { name, email, password, password_confirmation: passwordConfirm }
+        `${API_URL}/auth/register`,
+        { name: name.trim(), email: email.trim(), password, password_confirmation: passwordConfirm }
       );
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.message || 'Register failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
+    <div style={{ maxWidth: '420px', margin: '50px auto', padding: '24px', border: '1px solid #ccc', borderRadius: '8px', width: '90%' }}>
       <h2>Register</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: '#dc3545', marginBottom: '12px' }}>{error}</p>}
       <form onSubmit={handleRegister}>
         <div style={{ marginBottom: '10px' }}>
           <input
@@ -68,10 +87,16 @@ const Register = () => {
             style={{ width: '100%', padding: '8px' }}
           />
         </div>
-        <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Register
+        <button type="submit" disabled={loading} style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.75 : 1 }}>
+          {loading ? 'Loading...' : 'Register'}
         </button>
       </form>
+      <p style={{ marginTop: '16px', textAlign: 'center' }}>
+        Already have an account?{' '}
+        <button type="button" onClick={() => navigate('/login')} style={{ border: 'none', background: 'none', color: '#007bff', cursor: 'pointer', padding: 0 }}>
+          Login
+        </button>
+      </p>
     </div>
   );
 };

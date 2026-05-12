@@ -1,8 +1,21 @@
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
+jest.mock(
+  'react-router-dom',
+  () => ({
+    BrowserRouter: ({ children }) => <div>{children}</div>,
+    Routes: ({ children }) => <div>{children}</div>,
+    Route: ({ path, element }) => (path === '/login' ? <div>{element}</div> : null),
+    Navigate: ({ to }) => <div>Navigate to {to}</div>,
+    useNavigate: () => jest.fn()
+  }),
+  { virtual: true }
+);
+
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders login page heading', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
 });
