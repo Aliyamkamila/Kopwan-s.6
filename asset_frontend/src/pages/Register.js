@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const API_URL = 'https://kopwan-s6-production.up.railway.app/api';
 
@@ -93,9 +93,9 @@ const Register = () => {
       </form>
       <p style={{ marginTop: '16px', textAlign: 'center' }}>
         Already have an account?{' '}
-        <button type="button" onClick={() => navigate('/login')} style={{ border: 'none', background: 'none', color: '#007bff', cursor: 'pointer', padding: 0 }}>
+        <Link to="/login" style={{ color: '#007bff', textDecoration: 'none' }}>
           Login
-        </button>
+        </Link>
       </p>
     </div>
   );

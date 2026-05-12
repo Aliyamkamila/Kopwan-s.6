@@ -8,6 +8,7 @@ jest.mock(
     Routes: ({ children }) => <div>{children}</div>,
     Route: ({ path, element }) => (path === '/login' ? <div>{element}</div> : null),
     Navigate: ({ to }) => <div>Navigate to {to}</div>,
+    Link: ({ children }) => <span>{children}</span>,
     useNavigate: () => jest.fn()
   }),
   { virtual: true }
